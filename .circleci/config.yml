@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.8
+
+    working_directory: /go/src/github.com/tukejonny/mysql-warmer
+
+    steps:
+      - checkout
+      # to install glide
+      # Cache glide.sh
+      - restore_cache:
+          keys: glide-{{ checksum "/tmp/get_glide" }}
+      - run: curl https://glide.sh/get > /tmp/get_glide && sh /tmp/get_glide
+      - save_cache:
+          key: glide-{{ checksum "/tmp/get_glide" }}
+          paths: /tmp/get_glide
+
+      # Cache vendor/
+      - restore_cache:
+          keys: glide-cache-{{ checksum "glide.lock" }}
+      - run: glide install
+      - save_cache:
+          key: glide-cache-{{ checksum "glide.lock" }}
+          paths: vendor/
+
+      - run: glide install
+      - run: go build
+      - run: go test -v $(go list ./... | grep -v /vendor/)
+      - run: chmod +x ./scripts/install-mysql.sh && ./scripts/install-mysql.sh
+      - run: chmod +x ./scripts/check.sh && ./scripts/check.sh
