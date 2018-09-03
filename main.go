@@ -42,6 +42,7 @@ func MySQLWarmUp(config mysql.Config) {
 
 			for col := range colMap {
 				var sumStmt string
+				log.Println(colMap[col])
 				switch colMap[col] {
 				case "INT":
 					sumStmt = fmt.Sprintf("SUM(`%s`)", col)
