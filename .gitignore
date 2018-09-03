@@ -16,3 +16,6 @@
 # Original
 vendor/
 config.toml
+
+# Goreleaser
+dist/
