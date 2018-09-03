@@ -70,12 +70,12 @@ func (client *MySQLClient) getIndexes(tablename string) ([]MySQLIndex, error) {
 				WHEN C.data_type IN ('%s') THEN 'STRING'
 				ELSE 'UNKNOWN' END) AS data_type
 	FROM information_schema.STATISTICS S INNER JOIN information_schema.COLUMNS C
-		ON S.column_name = C.column_name WHERE S.table_name='%s'
+		ON S.column_name = C.column_name WHERE S.table_name='%s' AND S.table_schema='%s'
 	ORDER BY S.table_schema, S.table_name, S.seq_in_index`,
 		strings.Join(INT_TYPES, "','"),
 		strings.Join(DATETIME_TYPES, "','"),
 		strings.Join(STRING_TYPES, "','"),
-		tablename)
+		tablename, client.DbName)
 	rows, err := client.Client.Query(stmt)
 	if err != nil {
 		return nil, err
