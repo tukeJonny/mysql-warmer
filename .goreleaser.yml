@@ -10,3 +10,22 @@ builds:
     goarch:
       - amd64
       - i386
+
+checksum:
+  name_template: '{{ .ProjectName }}_checksum.txt'
+
+nfpm:
+  name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  homepage:  https://github.com/tukeJonny/mysql-warmer
+  description: MySQL Warmup Program
+  maintainer: Tukejonny <ne250143@yahoo.co.jp>
+  license: MIT
+  vendor: Tukejonny
+  formats:
+  - deb
+  - rpm
+  dependencies:
+  - git
+  recommends:
+  - rpm
+
