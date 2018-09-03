@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
+	log "github.com/sirupsen/logrus"
 )
 
 // MySQLのカラム型種別(大きく数値型、日時型、文字列型に分ける)
@@ -45,8 +46,10 @@ func NewMySQLClient(params MySQLDSNParams) (*MySQLClient, error) {
 	var dsn string
 	if len(params.UnixSock) > 0 {
 		// Unix Domain Socketが利用可能であれば、なるべく使う
+		log.Warn("[!] Use UNIX domain socket")
 		dsn = fmt.Sprintf("%s:%s@unix(%s)/%s", params.Username, params.Password, params.UnixSock, params.DbName)
 	} else {
+		log.Warn("[!] Use TCP connection")
 		// Unix Domain Socketが使えないならば、TCP接続
 		dsn = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", params.Username, params.Password, params.Hostname, params.Port, params.DbName)
 	}

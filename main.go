@@ -3,13 +3,19 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/tukejonny/mysql-warmer/mysql"
 )
 
+func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetLevel(log.DebugLevel)
+}
+
 func MySQLWarmUp(config mysql.Config) {
+	log.Info("[+] Start warmup ...")
 	client, err := mysql.NewMySQLClient(mysql.MySQLDSNParams{
 		Username: config.MySQL.Username,
 		Password: config.MySQL.Password,
@@ -21,15 +27,17 @@ func MySQLWarmUp(config mysql.Config) {
 		log.Fatalf("Failed to connct Mysql: %s\n", err.Error())
 	}
 
+	log.Info("[*] Get table list ...")
 	tables, err := client.GetTables()
 	if err != nil {
 		log.Fatalf("Failed to get mysql tables: %s\n", err.Error())
 	}
 
 	for _, table := range tables {
-		fmt.Printf("[+] Warming up %s table...\n", table.Name)
+		log.Infof("[*] Warming up %s ...\n", table.Name)
 		// インデックスが無ければ次のテーブルへ
 		if len(table.Indexes) == 0 {
+			log.Warnf("[!] Skip %s", table.Name)
 			continue
 		}
 
@@ -42,7 +50,6 @@ func MySQLWarmUp(config mysql.Config) {
 
 			for col := range colMap {
 				var sumStmt string
-				log.Println(colMap[col])
 				switch colMap[col] {
 				case "INT":
 					sumStmt = fmt.Sprintf("SUM(`%s`)", col)
@@ -66,12 +73,12 @@ func MySQLWarmUp(config mysql.Config) {
 			strings.Join(cols, ","),
 		)
 
-		fmt.Printf("[*] Invoke %s ...\n", stmt)
+		log.Info("[*] Querying ...")
 		_, err := client.Client.Query(stmt)
 		if err != nil {
 			log.Fatalf("Failed to exeute warmup for %s: %s", table.Name, err.Error())
 		}
-		fmt.Println(" done!")
+		log.Info("[+] done!")
 	}
 }
 
@@ -97,6 +104,4 @@ func main() {
 		},
 	}
 	MySQLWarmUp(config)
-
-	fmt.Println("[+] Finish")
 }
