@@ -10,7 +10,10 @@ import (
 )
 
 func init() {
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.TextFormatter{
+		DisableColors: false,
+		FullTimestamp: true,
+	})
 	log.SetLevel(log.DebugLevel)
 }
 
@@ -34,7 +37,7 @@ func MySQLWarmUp(config mysql.Config) {
 	}
 
 	for _, table := range tables {
-		log.Infof("[*] Warming up %s ...\n", table.Name)
+		log.Infof("[*] Warming up %s ...", table.Name)
 		// インデックスが無ければ次のテーブルへ
 		if len(table.Indexes) == 0 {
 			log.Warnf("[!] Skip %s", table.Name)
