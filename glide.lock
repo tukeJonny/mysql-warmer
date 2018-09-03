@@ -1,8 +1,0 @@
-hash: abbe8723f3f32dfec93942b8080f0f541776f48be0e778092de865ed4b09bcaa
-updated: 2017-10-25T03:34:03.443230778+09:00
-imports:
-- name: github.com/BurntSushi/toml
-  version: b26d9c308763d68093482582cea63d69be07a0f0
-- name: github.com/go-sql-driver/mysql
-  version: a0583e0143b1624142adab07e0e97fe106d99561
-testImports: []

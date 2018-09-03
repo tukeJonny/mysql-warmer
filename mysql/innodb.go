@@ -13,7 +13,7 @@ import (
 var (
 	INT_TYPES      = []string{"tinyint", "smallint", "mediumint", "int", "integer", "bigint", "float", "double", "real", "decimal", "numeric", "bit"}
 	DATETIME_TYPES = []string{"year", "date", "time", "datetime", "timestamp"}
-	STRING_TYPES   = []string{"char", "binary", "varchar", "varbinary", "tinyblob", "tinytext", "mediumblob", "mediumtext", "longblob", "longtext", "enum", "set"}
+	STRING_TYPES   = []string{"char", "binary", "varchar", "varbinary", "tinyblob", "text", "tinytext", "mediumblob", "mediumtext", "longblob", "longtext", "enum", "set"}
 )
 
 type MySQLClient struct {
