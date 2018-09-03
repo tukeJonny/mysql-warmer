@@ -1,0 +1,12 @@
+# .goreleaser.yml
+# Build customization
+builds:
+  - main: main.go
+    binary: mysqlwarmer
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - i386
